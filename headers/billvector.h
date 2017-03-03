@@ -117,9 +117,10 @@ namespace bill{
 	    body[i]-=right[i];
     }
      double operator*(const vectorNd & right) const {
-		if(right.size()!=N)
+	if(right.size()!=N)
 		   std::cerr<<("bill::vector<T,N>::operator-: vectors are uneven!\n");
-        double sum;
+
+        double sum=0;
 	for(unsigned int i=0; i<N; i++)
 	    sum+=(body[i]*right[i]);
         return sum;
@@ -274,7 +275,7 @@ namespace bill{
     quaternion(vector versor, double theta):s(cos(theta/2.0)),v(versor.versor()*sin(theta/2.0)){
     }
     
-    double operator[](size_t n) const{
+    double operator[](int n) const{
 		if(n>=3 || n<-1){
 		   std::cerr<<("bill::quaternion::operator[]: there is no field to access!\n");
 		   return 0.0;
@@ -285,7 +286,7 @@ namespace bill{
 		  return v[n]; 
     }
     
-    double& operator[](size_t n){
+    double& operator[](int n){
 		if(n>=3 || n<-1){
 		   std::cerr<<("bill::quaternion::operator[]: there is no field to access!\n");
 		   return *(new double);
