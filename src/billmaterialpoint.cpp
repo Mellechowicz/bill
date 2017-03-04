@@ -25,6 +25,8 @@ bill::BillMaterialPoint::BillMaterialPoint(bill::BillIntegrator algorithm, bill:
   radius = 0.1;
 }
 
+//bill::BillMaterialPoint::~BillMaterialPoint(){}
+
 void bill::BillMaterialPoint::Draw(){
   bill::GLaux::drawBall(std::get<0>(present),color,radius);
 }
@@ -37,10 +39,25 @@ void bill::BillMaterialPoint::Go(double step){
   Clear();
 }
 
+
+bill::vector bill::BillMaterialPoint::x(){
+  return std::get<0>(present);
+}
+bill::vector bill::BillMaterialPoint::v(){
+  return std::get<1>(present);
+}
+bill::vector bill::BillMaterialPoint::position(){
+  return x();
+}
+bill::vector bill::BillMaterialPoint::velocity(){
+  return v();
+}
+
+
 //*************************************************************************
 
 void bill::BillSetOfPoints::AddPoint(BillMaterialPoint* p){
-	  points.push_back(p);
+	  points.push_back(std::shared_ptr<BillMaterialPoint>(p));
 }
 
 bill::BillMaterialPoint*  bill::BillSetOfPoints::operator[](size_t n){
@@ -49,7 +66,7 @@ bill::BillMaterialPoint*  bill::BillSetOfPoints::operator[](size_t n){
     exit(-1);
   }
   else
-    return points[n]; 
+    return points[n].get(); 
 }
 
 void bill::BillSetOfPoints::Go(double step){
@@ -60,4 +77,9 @@ void bill::BillSetOfPoints::Go(double step){
 void bill::BillSetOfPoints::Draw(){
   for(auto& point : points)
     point->Draw();	
+}
+
+bill::BillSetOfPoints::~BillSetOfPoints(){
+  for(auto& point : points)
+	point.reset();	
 }

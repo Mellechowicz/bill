@@ -4,6 +4,7 @@
 #include "../../headers/billGLfunctions.h"
 #include "../../headers/billmaterialpoint.h"
 #include "../../headers/billengine.h"
+#include "planet.h"
 
 void renderScene(void);
 void mainLoop(void);
@@ -13,6 +14,7 @@ bill::BillIntegrator HollyWood = [](std::pair<bill::vector,bill::vector> PhasePo
 bill::vector x = std::get<0>( PhasePoint0 );
 bill::vector v = std::get<1>( PhasePoint0 );
 
+v+=step*Force;
 x+=step*v;
 
 return std::pair<bill::vector,bill::vector>(x,v);
@@ -25,13 +27,10 @@ bill::BillEngine engine;
 
 int main(int argc, char **argv){
 
-  bill::GLaux::eye=bill::vector({-1,0,0});
+  bill::GLaux::eye=bill::vector({-10,0,0});
   bill::GLaux::center=bill::vector({0,0,0});
 
-  SetOfPoints.AddPoint(new bill::BillMaterialPoint(HollyWood));
-  SetOfPoints.AddPoint(new bill::BillMaterialPoint(HollyWood,bill::vector({0.0,0.2,0.0}),bill::vector({0.0,0.0,0.1}),1.0,bill::vector({0.0,1.0,0.0})));
-  SetOfPoints.AddPoint(new bill::BillMaterialPoint(HollyWood,bill::vector({0.0,-0.2,0.0}),bill::vector({0.0,0.0,-0.1}),1.0,bill::vector({0.0,0.0,1.0})));
-
+  SetOfPoints.AddPoint(new planet(HollyWood,1.,bill::vector({0.0,1.0,0.0}),bill::vector({0.0,0.0,1.0})));
   engine = bill::BillEngine(SetOfPoints,0.05);
 
   bill::Window window(argc,argv);

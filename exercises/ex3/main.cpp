@@ -30,8 +30,7 @@ int main(int argc, char **argv){
   bill::GLaux::eye=bill::vector({-1,0,0});
   bill::GLaux::center=bill::vector({0,0,0});
 
-  oscillator pointA(HollyWood,0.1,bill::vector({0.0,0.3,0.0}));
-  SetOfPoints.AddPoint(&pointA);
+  SetOfPoints.AddPoint(new oscillator(HollyWood,0.1,bill::vector({0.0,0.3,0.0})));
   engine = bill::BillEngine(SetOfPoints,0.05);
 
   bill::Window window(argc,argv);

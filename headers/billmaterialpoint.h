@@ -5,6 +5,7 @@
 #include <tuple>
 #include <functional>
 #include <vector>
+#include <memory>
 #include "billvector.h"
 #include "billGLfunctions.h"
 
@@ -34,15 +35,22 @@ protected:
 
 public:
 	BillMaterialPoint(BillIntegrator algorithm, vector position=vector({0.,0.,0.}), vector velocity=vector({0.,0.,0.}), double mass=1.0, vector color=vector({1.0,0.0,0.0}));
+//	virtual ~BillMaterialPoint();
 	virtual void Draw();
 	void Go(double step);
+
+	bill::vector position();
+	bill::vector x();
+	bill::vector velocity();
+	bill::vector v();
 }; // end of class BillMaterialPoint
 
 class BillSetOfPoints{
 private:
-	std::vector<BillMaterialPoint*> points;
+	std::vector<std::shared_ptr<BillMaterialPoint>> points;
 public:
 	BillSetOfPoints(){};
+	virtual	~BillSetOfPoints();
 
 	void AddPoint(BillMaterialPoint* p);
 

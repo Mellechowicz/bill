@@ -1,9 +1,12 @@
 #include <iostream>
 #include <functional>
+#include <vector>
+#include <memory>
 #include "../../headers/billwindow.h"
 #include "../../headers/billGLfunctions.h"
 #include "../../headers/billmaterialpoint.h"
 #include "../../headers/billengine.h"
+#include "oscillator.h"
 
 void renderScene(void);
 void mainLoop(void);
@@ -13,6 +16,7 @@ bill::BillIntegrator HollyWood = [](std::pair<bill::vector,bill::vector> PhasePo
 bill::vector x = std::get<0>( PhasePoint0 );
 bill::vector v = std::get<1>( PhasePoint0 );
 
+v+=step*Force;
 x+=step*v;
 
 return std::pair<bill::vector,bill::vector>(x,v);
@@ -25,14 +29,30 @@ bill::BillEngine engine;
 
 int main(int argc, char **argv){
 
-  bill::GLaux::eye=bill::vector({-1,0,0});
+  bill::GLaux::eye=bill::vector({-5,0,0});
   bill::GLaux::center=bill::vector({0,0,0});
 
-  SetOfPoints.AddPoint(new bill::BillMaterialPoint(HollyWood));
-  SetOfPoints.AddPoint(new bill::BillMaterialPoint(HollyWood,bill::vector({0.0,0.2,0.0}),bill::vector({0.0,0.0,0.1}),1.0,bill::vector({0.0,1.0,0.0})));
-  SetOfPoints.AddPoint(new bill::BillMaterialPoint(HollyWood,bill::vector({0.0,-0.2,0.0}),bill::vector({0.0,0.0,-0.1}),1.0,bill::vector({0.0,0.0,1.0})));
+  std::vector<std::shared_ptr<oscillator>> O;
 
-  engine = bill::BillEngine(SetOfPoints,0.05);
+
+  //Tworzymy Oscylatory Sprzężone
+  for(int i=-5; i<=5; ++i){
+    O.push_back(std::shared_ptr<oscillator>(new oscillator(HollyWood,0.2,0.3,bill::vector({0.0,0.0,0.3*i}),bill::vector({0.0,0.0,0.0}),1.0,bill::vector({1.0,0.2*i,-0.2*i}))));
+    SetOfPoints.AddPoint(O.back().get());
+  }
+
+  //Tworzymy sprężynki do prawego
+  for(int i=0; i<10; ++i){
+    O[i]->set_right(O[i+1].get());
+  }
+  //Tworzymy sprężynki do lewego
+  for(int i=1; i<11; ++i){
+    O[i]->set_left(O[i-1].get());
+  }
+
+  //Wychylamy środkowy punkt
+  O[5]->set_position(bill::vector({0.0,0.2,0.0}));
+  engine = bill::BillEngine(SetOfPoints,0.2);
 
   bill::Window window(argc,argv);
   window.set_processNormalKeys(bill::GLaux::processNormalKeys);
