@@ -10,7 +10,7 @@
 
 namespace bill{
 
-using BillIntegrator=std::function<std::pair<vector,vector>(std::pair<vector,vector>,vector,double)>;
+using BillIntegrator = std::function<std::pair<vector,vector>(std::pair<vector,vector>,std::pair<vector,vector>,vector,double)>;
 
 class BillMaterialPoint{
 protected:

@@ -6,7 +6,7 @@ bill::vector bill::BillMaterialPoint::Force(){
 }	
 
 void bill::BillMaterialPoint::CalculateMove(double step){
-  future = algorithm(present,Force(),step);
+  future = algorithm(present,past,Force(),step);
 }
 
 void bill::BillMaterialPoint::Move(){
@@ -14,7 +14,7 @@ void bill::BillMaterialPoint::Move(){
   present = future;	
 }
 
-bill::BillMaterialPoint::BillMaterialPoint(std::function<std::pair<bill::vector,bill::vector>(std::pair<bill::vector,bill::vector>,bill::vector,double)> algorithm, bill::vector position, bill::vector velocity, double mass, bill::vector color){
+bill::BillMaterialPoint::BillMaterialPoint(bill::BillIntegrator algorithm, bill::vector position, bill::vector velocity, double mass, bill::vector color){
   this->algorithm=algorithm;
   past    = std::pair<bill::vector,bill::vector>({0,0,0},{0,0,0});
   present = std::pair<bill::vector,bill::vector>(position,velocity);

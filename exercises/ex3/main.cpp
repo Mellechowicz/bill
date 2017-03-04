@@ -9,11 +9,12 @@
 void renderScene(void);
 void mainLoop(void);
 
-bill::BillIntegrator HollyWood = [](std::pair<bill::vector,bill::vector> PhasePoint, bill::vector Force, double step){
+bill::BillIntegrator HollyWood = [](std::pair<bill::vector,bill::vector> PhasePoint0, std::pair<bill::vector,bill::vector> PhasePointM, bill::vector Force, double step){
 
-bill::vector x = std::get<0>( PhasePoint );
-bill::vector v = std::get<1>( PhasePoint );
+bill::vector x = std::get<0>( PhasePoint0 );
+bill::vector v = std::get<1>( PhasePoint0 );
 
+v+=step*Force;
 x+=step*v;
 
 return std::pair<bill::vector,bill::vector>(x,v);
