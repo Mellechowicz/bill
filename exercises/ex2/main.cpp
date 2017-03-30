@@ -30,9 +30,9 @@ int main(int argc, char **argv){
 
   SetOfPoints.AddPoint(new bill::BillMaterialPoint(HollyWood));
   SetOfPoints.AddPoint(new bill::BillMaterialPoint(HollyWood,bill::vector({0.0,0.2,0.0}),bill::vector({0.0,0.0,0.1}),1.0,bill::vector({0.0,1.0,0.0})));
-  SetOfPoints.AddPoint(new bill::BillMaterialPoint(HollyWood,bill::vector({0.0,-0.2,0.0}),bill::vector({0.0,0.0,-0.1}),1.0,bill::vector({0.0,0.0,1.0})));
+  SetOfPoints.AddPoint(std::shared_ptr<bill::BillMaterialPoint>(new bill::BillMaterialPoint(HollyWood,bill::vector({0.0,-0.2,0.0}),bill::vector({0.0,0.0,-0.1}),1.0,bill::vector({0.0,0.0,1.0}))));
 
-  engine = bill::BillEngine(SetOfPoints,0.05);
+  engine = bill::BillEngine(SetOfPoints);
 
   bill::Window window(argc,argv);
   window.set_processNormalKeys(bill::GLaux::processNormalKeys);

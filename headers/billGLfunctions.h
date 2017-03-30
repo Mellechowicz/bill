@@ -37,8 +37,11 @@ extern bool IS_CLICKED;
 extern int mouseTolerance;
 
 void computePos();
-void drawBall(bill::vector position, bill::vector color=bill::vector({1.0,0.0,0.0}), float radius=0.1);
+
+// drawing functions
+void drawBall(bill::vector position, bill::vector color=bill::vector({1.0,0.0,0.0}), float radius=0.1, float alpha=1.);
 void drawSnowMan();
+
 void processNormalKeys(unsigned char key, int x, int y);
 void processNormalKeysUp(unsigned char key, int x, int y);
 void pressKey(int key, int xx, int yy);

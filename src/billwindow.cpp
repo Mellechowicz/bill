@@ -77,6 +77,9 @@ void bill::Window::initiate(){
   // OpenGL init
   glEnable(GL_DEPTH_TEST);
 
+  // Transparency
+  glEnable (GL_BLEND); glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   // enter GLUT event processing cycle
   glutMainLoop();
 

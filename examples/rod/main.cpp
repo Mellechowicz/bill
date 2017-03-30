@@ -6,22 +6,11 @@
 #include "../../headers/billGLfunctions.h"
 #include "../../headers/billmaterialpoint.h"
 #include "../../headers/billengine.h"
+#include "../../headers/billintegrators.h"
 #include "oscillator.h"
 
 void renderScene(void);
 void mainLoop(void);
-
-bill::BillIntegrator HollyWood = [](std::pair<bill::vector,bill::vector> PhasePoint0, std::pair<bill::vector,bill::vector> PhasePointM, bill::vector Force, double step){
-
-bill::vector x = std::get<0>( PhasePoint0 );
-bill::vector v = std::get<1>( PhasePoint0 );
-
-v+=step*Force;
-x+=step*v;
-
-return std::pair<bill::vector,bill::vector>(x,v);
-
-};
 
 bill::BillSetOfPoints SetOfPoints;
 
@@ -33,26 +22,36 @@ int main(int argc, char **argv){
   bill::GLaux::center=bill::vector({0,0,0});
 
   std::vector<std::shared_ptr<oscillator>> O;
-
+  double step = 0.1; // integration step
 
   //Tworzymy Oscylatory Sprzężone
   for(int i=-5; i<=5; ++i){
-    O.push_back(std::shared_ptr<oscillator>(new oscillator(HollyWood,0.2,0.3,bill::vector({0.0,0.0,0.3*i}),bill::vector({0.0,0.0,0.0}),1.0,bill::vector({1.0,0.2*i,-0.2*i}))));
-    SetOfPoints.AddPoint(O.back().get());
+    O.push_back(std::shared_ptr<oscillator>(new oscillator(bill::Verlet,10,0.3,bill::vector({0.0,0.0,0.3*i}),bill::vector({0.0,0.0,0.0}),1.0,bill::vector({1.0,0.2*i,-0.2*i}),step)));
+    SetOfPoints.AddPoint(O.back());
   }
 
   //Tworzymy sprężynki do prawego
   for(int i=0; i<10; ++i){
-    O[i]->set_right(O[i+1].get());
+    O[i]->set_right(O[i+1]);
   }
   //Tworzymy sprężynki do lewego
   for(int i=1; i<11; ++i){
-    O[i]->set_left(O[i-1].get());
+    O[i]->set_left(O[i-1]);
+  }
+
+  //Tworzymy sprężynki do 2go prawego
+  for(int i=0; i<9; ++i){
+    O[i]->set_2nd_right(O[i+2]);
+  }
+  //Tworzymy sprężynki do 2go lewego
+  for(int i=2; i<11; ++i){
+    O[i]->set_2nd_left(O[i-2]);
   }
 
   //Wychylamy środkowy punkt
-  O[5]->set_position(bill::vector({0.0,0.2,0.0}));
-  engine = bill::BillEngine(SetOfPoints,0.2);
+  O[5]->set_position(bill::vector({0.0,0.3,0.0}));
+  O[5]->set_velocity(bill::vector({0.0,0.0,0.0}));
+  engine = bill::BillEngine(SetOfPoints);
 
   bill::Window window(argc,argv);
   window.set_processNormalKeys(bill::GLaux::processNormalKeys);

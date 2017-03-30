@@ -3,11 +3,10 @@
 bill::BillEngine::BillEngine(){
   starttime=glutGet(GLUT_ELAPSED_TIME);
   now=starttime;
-  timestep=0.01;
   set=NULL;
 }
 
-bill::BillEngine::BillEngine(BillSetOfPoints& set, double timestep){ 
+bill::BillEngine::BillEngine(BillSetOfPoints& set){ 
   starttime=glutGet(GLUT_ELAPSED_TIME);
   now=starttime;
   this->set = &set;
@@ -18,7 +17,7 @@ void bill::BillEngine::step(){
   if(set!=NULL){
     now=glutGet(GLUT_ELAPSED_TIME);
     if((now-starttime)>20){
-      set->Go(timestep);
+      set->Go();
       starttime=now;
     }
   }

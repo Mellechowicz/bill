@@ -158,7 +158,7 @@ namespace bill{
     friend vectorNd operator*(const T & scalar, const vectorNd& right) {
         return right*scalar;
     }
-    void operator*=(const T & scalar) {
+   void operator*=(const T & scalar) {
         for(auto& item : body)
 	    item*=scalar;
     }

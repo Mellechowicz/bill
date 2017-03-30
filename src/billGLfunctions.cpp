@@ -56,11 +56,25 @@ void bill::GLaux::computePos() {
 }
 
 
-void bill::GLaux::drawBall(bill::vector position, bill::vector color, float radius){
+void bill::GLaux::drawBall(bill::vector position, bill::vector color, float radius, float alpha){
   glPushMatrix();
-  glColor3f(color[0],color[1],color[2]);
+
+  if(fabs(alpha-1.)<1e-15)
+    glColor3f(color[0],color[1],color[2]);
+  else 
+    glColor4f(color[0],color[1],color[2],alpha);
+
   glTranslatef(position[0],position[1],position[2]);
-  glutSolidSphere(radius,10,10);
+
+  if(radius<0.05)
+    glutSolidSphere(radius,5,5);
+  else if(radius>0.5)
+    glutSolidSphere(radius,50,50);
+  else{
+    unsigned int res = static_cast<unsigned int>(100*radius);
+    glutSolidSphere(radius,res,res);
+  }
+
   glPopMatrix();
 }
 

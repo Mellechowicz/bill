@@ -17,7 +17,7 @@ private:
 public:
 
   BillEngine();
-  BillEngine(BillSetOfPoints& set, double timestep=0.01);
+  BillEngine(BillSetOfPoints& set);
   void step();
 }; //end of class BillEngine
 

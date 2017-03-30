@@ -4,22 +4,11 @@
 #include "../../headers/billGLfunctions.h"
 #include "../../headers/billmaterialpoint.h"
 #include "../../headers/billengine.h"
+#include "../../headers/billintegrators.h"
 #include "oscillator.h"
 
 void renderScene(void);
 void mainLoop(void);
-
-bill::BillIntegrator HollyWood = [](std::pair<bill::vector,bill::vector> PhasePoint0, std::pair<bill::vector,bill::vector> PhasePointM, bill::vector Force, double step){
-
-bill::vector x = std::get<0>( PhasePoint0 );
-bill::vector v = std::get<1>( PhasePoint0 );
-
-v+=step*Force;
-x+=step*v;
-
-return std::pair<bill::vector,bill::vector>(x,v);
-
-};
 
 bill::BillSetOfPoints SetOfPoints;
 
@@ -30,8 +19,8 @@ int main(int argc, char **argv){
   bill::GLaux::eye=bill::vector({-1,0,0});
   bill::GLaux::center=bill::vector({0,0,0});
 
-  SetOfPoints.AddPoint(new oscillator(HollyWood,0.1,bill::vector({0.0,0.3,0.0})));
-  engine = bill::BillEngine(SetOfPoints,0.05);
+  SetOfPoints.AddPoint(new oscillator(bill::Verlet,0.1,bill::vector({0.0,0.3,0.0})));
+  engine = bill::BillEngine(SetOfPoints);
 
   bill::Window window(argc,argv);
   window.set_processNormalKeys(bill::GLaux::processNormalKeys);

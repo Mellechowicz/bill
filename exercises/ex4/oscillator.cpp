@@ -34,17 +34,35 @@ bill::vector oscillator::Force(){
     ForceRight += kp*(rp/norm_rp)*(norm_rp - 2*l);
   }
 
-  return (ForceLeft+ForceRight-0.1*v());
+  if(third_left!=NULL){
+    bill::vector xl = third_left->position(); // pozycja punktu z lewej
+    bill::vector rl = xl - x0;
+    double norm_rl = bill::vector::norm(rl);
+    ForceLeft += kb*(rl/norm_rl)*(norm_rl - 3*l);
+  }
+
+  if(third_right!=NULL){
+    bill::vector xp = third_right->position(); // pozycja punktu z prawej
+    bill::vector rp = xp - x0;
+    double norm_rp = bill::vector::norm(rp);
+    ForceRight += kb*(rp/norm_rp)*(norm_rp - 3*l);
+  }
+
+  return (ForceLeft+ForceRight-0.1*v()+mass*g*bill::vector({0.,-1.,0.}));
 }
 
 oscillator::oscillator(bill::BillIntegrator algorithm, double k, double l, bill::vector position, bill::vector velocity, double mass, bill::vector color, double step):bill::BillMaterialPoint(algorithm,position,velocity,mass,color,step){
 	this->k = k;
-	kp = 0.5*k;
+	this->kp = k;
+	this->kb = k;
+	this->g=0.005;
 	this->l = l;
-	right=NULL;
-	left=NULL;
-	second_right=NULL;
-	second_left=NULL;
+	this->right=NULL;
+	this->left=NULL;
+	this->second_right=NULL;
+	this->second_left=NULL;
+	this->third_right=NULL;
+	this->third_left=NULL;
 }
 
 void oscillator::set_right(std::shared_ptr<oscillator> r){
@@ -63,23 +81,11 @@ void oscillator::set_2nd_left(std::shared_ptr<oscillator> l){
   second_left=l;
 }
 
-void oscillator::Draw()
-{
-  bill::BillMaterialPoint::Draw(); // rysujemy punkt
-
-  bill::vector x0 = x(); // pobieramy położenie punktu
-
-  if(left!=NULL){
-    bill::vector xm = left->x();
-
-    // rysujemy linię
-    glPushMatrix();
-    glLineWidth(2.5);
-    glColor3f(1.0, 1.0, 1.0);
-    glBegin(GL_LINES);
-    glVertex3f(x0[0],x0[1],x0[2]);
-    glVertex3f(xm[0],xm[1],xm[2]);
-    glEnd();
-    glPopMatrix();
-  }
+void oscillator::set_3rd_right(std::shared_ptr<oscillator> r){
+  third_right=r;
 }
+
+void oscillator::set_3rd_left(std::shared_ptr<oscillator> l){
+  third_left=l;
+}
+
