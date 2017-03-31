@@ -40,6 +40,7 @@ void computePos();
 
 // drawing functions
 void drawBall(bill::vector position, bill::vector color=bill::vector({1.0,0.0,0.0}), float radius=0.1, float alpha=1.);
+void drawVector(bill::vector vec, bill::vector position=bill::vector({0.0,0.0,0.0}), bill::vector color=bill::vector({1.0,1.0,1.0}));
 void drawSnowMan();
 
 void processNormalKeys(unsigned char key, int x, int y);

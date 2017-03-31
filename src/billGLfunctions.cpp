@@ -78,6 +78,67 @@ void bill::GLaux::drawBall(bill::vector position, bill::vector color, float radi
   glPopMatrix();
 }
 
+
+void bill::GLaux::drawVector(bill::vector vec, bill::vector pos, bill::vector color){
+  double length = bill::vector::norm(vec);
+
+  bill::vector end = pos + vec; // end of the vector
+
+  bill::vector vp1; // vectors perpendicular to vec
+  bill::vector vp2;
+
+  if(fabs(vec[0]) > 1e-5){
+    vp1[0]=-vec[1];
+    vp1[1]= vec[0];
+    vp1[2]= 0.;
+  }
+  else{
+    vp1[0]= 0.;
+    vp1[1]=-vec[2];
+    vp1[2]= vec[1];
+  }
+
+  vp2 = vp1^vec;
+
+  vp1.normalize();
+  vp2.normalize();
+
+  bill::vector s1p = end + 0.05*length*vp1 - 0.05*vec;
+  bill::vector s1m = end - 0.05*length*vp1 - 0.05*vec;
+  bill::vector s2p = end + 0.05*length*vp2 - 0.05*vec;
+  bill::vector s2m = end - 0.05*length*vp2 - 0.05*vec;
+
+
+  // drawing
+  glPushMatrix();
+  glLineWidth(2.5);
+  glColor3f(color[0], color[1], color[2]);
+  glBegin(GL_LINES);
+  glVertex3f(pos[0],pos[1],pos[2]);
+  glVertex3f(end[0],end[1],end[2]); // main line
+  glEnd();
+  glPopMatrix();
+
+  glPushMatrix();
+  glColor3f(color[0], color[1], color[2]);
+  glBegin(GL_TRIANGLES);         // head
+  glVertex3f(end[0],end[1],end[2]);
+  glVertex3f(s1p[0],s1p[1],s1p[2]);
+  glVertex3f(s2p[0],s2p[1],s2p[2]);
+  glVertex3f(end[0],end[1],end[2]);
+  glVertex3f(s2p[0],s2p[1],s2p[2]);
+  glVertex3f(s1m[0],s1m[1],s1m[2]);
+  glVertex3f(end[0],end[1],end[2]);
+  glVertex3f(s1m[0],s1m[1],s1m[2]);
+  glVertex3f(s2m[0],s2m[1],s2m[2]);
+  glVertex3f(end[0],end[1],end[2]);
+  glVertex3f(s2m[0],s2m[1],s2m[2]);
+  glVertex3f(s1p[0],s1p[1],s1p[2]);
+  glEnd();
+  glPopMatrix();
+
+}
+
 void bill::GLaux::drawSnowMan() {
   
   glColor3f(1.0f, 1.0f, 1.0f);

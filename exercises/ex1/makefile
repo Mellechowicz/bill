@@ -1,6 +1,10 @@
 CXX=g++
-CFLAGS= -std=c++14 -pthread -O2 -Wall -pedantic -c 
-LDFLAGS= -lpthread -lglut -lGL -lGLU -lm
+CCFLAGS= -std=c++14 -I${HOME}/freeglut-3.0.0/include -pthread -O2 -Wall -pedantic -c 
+LDFLAGS= -lpthread -lGL -lGLU -lm
+#LDFLAGS += -lglut
+LDFLAGS += -L${HOME}/freeglut-3.0.0/lib -lX11 -lXxf86vm -lXrandr -lXi ${HOME}/freeglut-3.0.0/lib/libglut.a ${HOME}/freeglut-3.0.0/lib/libglut.so
+
+
 
 QMTHEADERS = ../../headers
 QMTSRC = ../../src
