@@ -10,24 +10,26 @@ BIN = ./obj
 
 
 MAIN_PREFIX = main
-MODE = grass
+MODE = boxes
 
 MKDIR_P = mkdir -p
 
-$(MODE): obj $(BIN)/$(MAIN_PREFIX).o $(BIN)/billwindow.o  $(BIN)/billGLfunctions.o $(BIN)/billengine.o $(BIN)/billmaterialpoint.o $(BIN)/oscillator.o
-	$(CXX) $(BIN)/oscillator.o $(BIN)/billmaterialpoint.o  $(BIN)/billengine.o $(BIN)/billGLfunctions.o $(BIN)/billwindow.o $(BIN)/$(MAIN_PREFIX).o $(LDFLAGS) -o $(MODE)
+$(MODE): obj $(BIN)/$(MAIN_PREFIX).o $(BIN)/billwindow.o  $(BIN)/billGLfunctions.o $(BIN)/billRBengine.o $(BIN)/billmaterialpoint.o $(BIN)/billrigidbody.o $(BIN)/box.o
+	$(CXX) $(BIN)/box.o $(BIN)/billrigidbody.o $(BIN)/billmaterialpoint.o $(BIN)/billRBengine.o $(BIN)/billGLfunctions.o $(BIN)/billwindow.o $(BIN)/$(MAIN_PREFIX).o $(LDFLAGS) -o $(MODE)
 $(BIN)/$(MAIN_PREFIX).o: $(MAIN_PREFIX).cpp
 	$(CXX) $(CFLAGS) $(MAIN_PREFIX).cpp -o $(BIN)/$(MAIN_PREFIX).o 
 $(BIN)/billwindow.o: $(QMTSRC)/billwindow.cpp 
 	    $(CXX) $(CFLAGS) $(QMTSRC)/billwindow.cpp -o $(BIN)/billwindow.o
 $(BIN)/billGLfunctions.o: $(QMTSRC)/billGLfunctions.cpp 
 	    $(CXX) $(CFLAGS) $(QMTSRC)/billGLfunctions.cpp -o $(BIN)/billGLfunctions.o
-$(BIN)/billengine.o: $(QMTSRC)/billengine.cpp 
-	    $(CXX) $(CFLAGS) $(QMTSRC)/billengine.cpp -o $(BIN)/billengine.o
+$(BIN)/billRBengine.o: $(QMTSRC)/billRBengine.cpp 
+	    $(CXX) $(CFLAGS) $(QMTSRC)/billRBengine.cpp -o $(BIN)/billRBengine.o
 $(BIN)/billmaterialpoint.o: $(QMTSRC)/billmaterialpoint.cpp 
 	    $(CXX) $(CFLAGS) $(QMTSRC)/billmaterialpoint.cpp -o $(BIN)/billmaterialpoint.o
-$(BIN)/oscillator.o: oscillator.cpp
-	    $(CXX) $(CFLAGS) oscillator.cpp -o $(BIN)/oscillator.o
+$(BIN)/billrigidbody.o: $(QMTSRC)/billrigidbody.cpp 
+	    $(CXX) $(CFLAGS) $(QMTSRC)/billrigidbody.cpp -o $(BIN)/billrigidbody.o
+$(BIN)/box.o: box.cpp 
+	    $(CXX) $(CFLAGS) box.cpp -o $(BIN)/box.o
 obj:
 	${MKDIR_P} obj
 

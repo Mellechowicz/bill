@@ -78,6 +78,66 @@ void bill::GLaux::drawBall(bill::vector position, bill::vector color, float radi
   glPopMatrix();
 }
 
+void bill::GLaux::drawBox(std::vector<bill::vector> vertecies, std::vector<bill::vector> colors, float alpha){
+  std::vector<bill::vector> normals;
+
+  normals.push_back((vertecies[0]-vertecies[4]).versor());
+  normals.push_back((vertecies[4]-vertecies[0]).versor());
+  normals.push_back((vertecies[0]-vertecies[1]).versor());
+  normals.push_back((vertecies[1]-vertecies[0]).versor());
+  normals.push_back((vertecies[0]-vertecies[3]).versor());
+  normals.push_back((vertecies[3]-vertecies[0]).versor());
+
+  glPushMatrix();
+
+  glBegin(GL_QUADS);
+	// top
+        glColor4f(colors[0][0],colors[0][1],colors[0][2],alpha);
+	glNormal3f(normals[0][0],normals[0][1],normals[0][2]);
+	glVertex3f(vertecies[0][0],vertecies[0][1],vertecies[0][2]);
+	glVertex3f(vertecies[1][0],vertecies[1][1],vertecies[1][2]);
+	glVertex3f(vertecies[2][0],vertecies[2][1],vertecies[2][2]);
+	glVertex3f(vertecies[3][0],vertecies[3][1],vertecies[3][2]);
+	// bottom
+        glColor4f(colors[1][0],colors[1][1],colors[1][2],alpha);
+	glNormal3f(normals[1][0],normals[1][1],normals[1][2]);
+	glVertex3f(vertecies[4][0],vertecies[4][1],vertecies[4][2]);
+	glVertex3f(vertecies[5][0],vertecies[5][1],vertecies[5][2]);
+	glVertex3f(vertecies[6][0],vertecies[6][1],vertecies[6][2]);
+	glVertex3f(vertecies[7][0],vertecies[7][1],vertecies[7][2]);
+	// left
+        glColor4f(colors[2][0],colors[2][1],colors[2][2],alpha);
+	glNormal3f(normals[2][0],normals[2][1],normals[2][2]);
+	glVertex3f(vertecies[0][0],vertecies[0][1],vertecies[0][2]);
+	glVertex3f(vertecies[3][0],vertecies[3][1],vertecies[3][2]);
+	glVertex3f(vertecies[7][0],vertecies[7][1],vertecies[7][2]);
+	glVertex3f(vertecies[4][0],vertecies[4][1],vertecies[4][2]);
+	// right
+        glColor4f(colors[3][0],colors[3][1],colors[3][2],alpha);
+	glNormal3f(normals[3][0],normals[3][1],normals[3][2]);
+	glVertex3f(vertecies[1][0],vertecies[1][1],vertecies[1][2]);
+	glVertex3f(vertecies[2][0],vertecies[2][1],vertecies[2][2]);
+	glVertex3f(vertecies[6][0],vertecies[6][1],vertecies[6][2]);
+	glVertex3f(vertecies[5][0],vertecies[5][1],vertecies[5][2]);
+	// front
+        glColor4f(colors[4][0],colors[4][1],colors[4][2],alpha);
+	glNormal3f(normals[4][0],normals[4][1],normals[4][2]);
+	glVertex3f(vertecies[0][0],vertecies[0][1],vertecies[0][2]);
+	glVertex3f(vertecies[1][0],vertecies[1][1],vertecies[1][2]);
+	glVertex3f(vertecies[5][0],vertecies[5][1],vertecies[5][2]);
+	glVertex3f(vertecies[4][0],vertecies[4][1],vertecies[4][2]);
+	// back
+        glColor4f(colors[5][0],colors[5][1],colors[5][2],alpha);
+	glNormal3f(normals[5][0],normals[5][1],normals[5][2]);
+	glVertex3f(vertecies[3][0],vertecies[3][1],vertecies[3][2]);
+	glVertex3f(vertecies[2][0],vertecies[2][1],vertecies[2][2]);
+	glVertex3f(vertecies[6][0],vertecies[6][1],vertecies[6][2]);
+	glVertex3f(vertecies[7][0],vertecies[7][1],vertecies[7][2]);
+  glEnd();
+
+  glPopMatrix();
+}
+
 
 void bill::GLaux::drawVector(bill::vector vec, bill::vector pos, bill::vector color){
   double length = bill::vector::norm(vec);

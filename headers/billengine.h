@@ -20,6 +20,5 @@ public:
   BillEngine(BillSetOfPoints& set);
   void step();
 }; //end of class BillEngine
-
 } //end of namespace bill
 #endif
