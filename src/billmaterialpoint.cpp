@@ -9,6 +9,10 @@ void bill::BillMaterialPoint::CalculateMove(bill::vector& force){
   future = algorithm(present,past,force,step);
 }
 
+void bill::BillMaterialPoint::CalculateMove(bill::BillIntegrator algorithm, bill::vector& force){
+  future = algorithm(present,past,force,step);
+}
+
 void bill::BillMaterialPoint::Move(){
   past = present;
   present = future;	

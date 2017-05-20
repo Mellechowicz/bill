@@ -11,7 +11,7 @@
 
 namespace bill{
 
-using BillRBIntegrator = std::function<std::tuple<vector,vector,quaternion,vector>(std::tuple<vector,vector,quaternion,vector>,std::tuple<vector,vector,quaternion,vector>,vector,double)>;
+using BillRBIntegrator = std::function<std::tuple<vector,vector,quaternion,vector>(std::tuple<vector,vector,quaternion,vector>,std::tuple<vector,vector,quaternion,vector>,vector,vector,double)>;
 
 class BillRigidBody{
 protected:
@@ -38,6 +38,7 @@ public:
 	virtual vector Force();
 	virtual vector Torque();
 	void CalculateMove(bill::vector& force, bill::vector& torque);
+	void CalculateMove(bill::BillRBIntegrator algorithm, bill::vector& force, bill::vector& torque);
 	void Move();
 
 	double m();

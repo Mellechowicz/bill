@@ -9,7 +9,11 @@ bill::vector bill::BillRigidBody::Torque(){
 }	
 
 void bill::BillRigidBody::CalculateMove(bill::vector& force, bill::vector& torque){
-  future = algorithm(present,past,force,step);
+  future = algorithm(present,past,force,torque,step);
+}
+
+void bill::BillRigidBody::CalculateMove(bill::BillRBIntegrator algorithm, bill::vector& force, bill::vector& torque){
+  future = algorithm(present,past,force,torque,step);
 }
 
 void bill::BillRigidBody::Move(){

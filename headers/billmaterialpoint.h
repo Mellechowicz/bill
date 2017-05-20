@@ -36,6 +36,7 @@ public:
 
 	virtual vector Force();
 	void CalculateMove(bill::vector& force);
+	void CalculateMove(BillIntegrator algorithm, bill::vector& force);
 	void Move();
 
 	double m();

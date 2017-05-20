@@ -10,7 +10,7 @@
 void renderScene(void);
 void mainLoop(void);
 
-bill::BillRBIntegrator HollyWood = [](std::tuple<bill::vector,bill::vector,bill::quaternion,bill::vector> PhasePoint0, std::tuple<bill::vector,bill::vector,bill::quaternion,bill::vector> PhasePointM, bill::vector Force, double step){
+bill::BillRBIntegrator HollyWood = [](std::tuple<bill::vector,bill::vector,bill::quaternion,bill::vector> PhasePoint0, std::tuple<bill::vector,bill::vector,bill::quaternion,bill::vector> PhasePointM, bill::vector Force, bill::vector torque, double step){
 
 bill::vector x = std::get<0>( PhasePoint0 );
 bill::vector v = std::get<1>( PhasePoint0 );
