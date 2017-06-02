@@ -10,6 +10,21 @@
 
 namespace bill{
 
+//*******************************************************************
+//*******************************************************************
+//*******************************************************************
+//                     _       _                     
+//   __ __ __  ___    | |__   | |_     ___      _ _  
+//   \ V  V / / -_)   | / /   |  _|   / _ \    | '_| 
+//    \_/\_/  \___|   |_\_\   _\__|   \___/   _|_|_  
+//  _|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""| 
+//  "`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-' 
+//*******************************************************************
+//*******************************************************************
+//*******************************************************************
+
+
+//klasa vectorNd mająca funkcjonalność N-wymiarowego wektora liczb T
   template<typename T,size_t N>
   class vectorNd{
   static_assert(std::is_same<double,T>::value ||
@@ -51,9 +66,10 @@ namespace bill{
     size_t size() const{return body.size();}
     
     vectorNd versor(){
-    //std::cout<<norm(*this)<<std::endl;
-      return (*this)/norm(*this);
-      
+	auto mynorm = norm(*this);
+
+	if(mynorm>1e-14)return (*this)/norm(*this);
+	else		return vectorNd<T,N>();
     }
     
     void normalize(){
@@ -194,7 +210,12 @@ namespace bill{
 	}
 	
   };	//end class vectorNd
-  
+ 
+
+//********
+// Aliasy      
+//********
+ 
   using vector  = vectorNd<double,3U>;
   using vectorf = vectorNd<float,3U>;
   using vectori = vectorNd<int,3U>;
@@ -202,7 +223,20 @@ namespace bill{
   using vectorl = vectorNd<long,3U>;
   using vectorll= vectorNd<long long,3U>;
 
-  class quaternion{
+//*******************************************************************
+//*******************************************************************
+//*******************************************************************
+//     _                       _                                _                      _  _  
+//    | |__  __ __ __ __ _    | |_     ___      _ _   _ _      (_)     ___    _ _     | || | 
+//    | / /  \ V  V // _` |   |  _|   / -_)    | '_| | ' \     | |    / _ \  | ' \     \_, | 
+//    |_\_\   \_/\_/ \__,_|   _\__|   \___|   _|_|_  |_||_|   _|_|_   \___/  |_||_|   _|__/  
+//  _|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_| """"| 
+//  "`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-' 
+//*******************************************************************
+//*******************************************************************
+//*******************************************************************
+
+ class quaternion{
   protected:
     double s;
     vector v;
@@ -381,6 +415,317 @@ namespace bill{
 	  return stream;
 	}
   };	// end class quaternion
-  
+   
+//*******************************************************************
+//*******************************************************************
+//*******************************************************************
+//                              _                            
+//    _ __    __ _     __      (_)     ___      _ _     ___  
+//   | '  \  / _` |   / _|     | |    / -_)    | '_|   |_ /  
+//   |_|_|_| \__,_|   \__|_   _|_|_   \___|   _|_|_   _/__|  
+//  _|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""| 
+//  "`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-' 
+//*******************************************************************
+//*******************************************************************
+//*******************************************************************
+
+//klasa matrixNN mająca funkcjonalność macierzy NxN liczb T
+  template<typename T,size_t N>
+  class matrixNN{
+  protected:
+    std::vector<T> body;
+	
+  public:
+    matrixNN<T,N>(){
+	body=std::vector<T>(N*N);
+    }
+    matrixNN<T,N>(T value){
+	body=std::vector<T>(N*N,value);
+    }
+    matrixNN<T,N>(std::initializer_list<std::initializer_list<T>> list){
+	if(list.size() != N){
+  	  std::cerr<<("bill::matrixNN<T,N>: initialization list is not the dimension of matrix and will be ignored!\n");
+	  body=std::vector<T>(N*N);
+	  return;
+	}
+		
+	for (const auto& llist : list)
+	  if(llist.size() != N){
+  	    std::cerr<<("bill::matrixNN<T,N>: initialization list is not the dimension of matrix and will be ignored!\n");
+	    body=std::vector<T>(N*N);
+	    return;
+	  }
+
+	body=std::vector<T>();
+	for (const auto& llist : list){
+	  body.insert(body.end(),llist);
+	}
+    }
+    matrixNN<T,N>(const std::vector<T> vec){
+	if(vec.size() != N*N){
+  	  std::cerr<<("bill::matrixNN<T,N>: vector is not the size of matrix and will be ignored!\n");
+	  body=std::vector<T>(N*N);
+	  return;
+	}
+		
+	body=vec;
+    }
+
+    // FUNCTIONS
+    
+    size_t size() const{return body.size();}
+    size_t dim() const{return N;}
+    
+ 
+    // OPERATORS
+    
+    // dostęp do pola n=N*i+j  
+    T operator[](size_t n) const{
+	if(n>=N*N || n<0){
+	  std::cerr<<("bill::matrixNN<T,N>::operator(): there is no field to access!\n");
+	  return *(new T);
+	}
+	return body[n]; 
+    }
+
+    // dostęp do pola n=N*i+j  
+    T& operator[](size_t n){
+	if(n>=N*N || n<0){
+	  std::cerr<<("bill::matrixNN<T,N>::operator(): there is no field to access!\n");
+	  return *(new T);
+	}
+	return body[n]; 
+    }
+
+    // dostęp do pola n=N*i+j  
+    T operator()(size_t n) const{
+		if(n>=N*N || n<0){
+		   std::cerr<<("bill::matrixNN<T,N>::operator(): there is no field to access!\n");
+		   return *(new T);
+		}
+     return body[n]; 
+    }
+
+    // dostęp do pola n=N*i+j  
+    T& operator()(size_t n){
+		if(n>=N*N || n<0){
+		   std::cerr<<("bill::matrixNN<T,N>::operator(): there is no field to access!\n");
+		   return *(new T);
+		}
+     return body[n]; 
+    }
+
+    // dostęp do pola i,j  
+    T operator()(size_t i, size_t j) const{
+		if(i>=N || i<0 || j>=N || j<0){
+		   std::cerr<<("bill::matrixNN<T,N>::operator(): there is no field to access!\n");
+		   return *(new T);
+		}
+     return body[N*i+j]; 
+    }
+    // dostęp do pola i,j  
+    T& operator()(size_t i, size_t j){
+		if(i>=N || i<0 || j>=N || j<0){
+		   std::cerr<<("bill::matrixNN<T,N>::operator(): there is no field to access!\n");
+		   return *(new T);
+		}
+     return body[N*i+j]; 
+    }
+
+    // dodawanie   
+    matrixNN operator+(const matrixNN & right) const {
+	if(right.dim()!=N){
+	  std::cerr<<("bill::matrixNN<T,N>::operator+: matrices are uneven!\n");
+	  return matrixNN<T,N>();
+	}
+
+        std::vector<T> sum;
+	for(size_t i=0; i<N*N; i++)
+	    sum.push_back(body[i]+right[i]);
+        return matrixNN(sum);
+    }
+
+    // odejmowanie
+    matrixNN operator-(const matrixNN & right) const {
+	if(right.dim()!=N){
+	  std::cerr<<("bill::matrixNN<T,N>::operator+: matrices are uneven!\n");
+	  return matrixNN<T,N>();
+	}
+
+        std::vector<T> sum;
+	for(size_t i=0; i<N*N; i++)
+	    sum.push_back(body[i]-right[i]);
+        return matrixNN(sum);
+    }
+
+   matrixNN operator-() const{
+      std::vector<T>sum;
+	for(unsigned int i=0; i<N*N; i++)
+	    sum.push_back(-body[i]);
+        return matrixNN(sum);
+    }
+    void operator+=(const matrixNN & right) {
+	for(unsigned int i=0; i<N*N; i++)
+	    body[i]+=right[i];
+    }
+    void operator-=(const matrixNN & right) {
+	for(unsigned int i=0; i<N*N; i++)
+	    body[i]-=right[i];
+    }
+
+   // MNOŻENIE
+   // z wektorem *right
+   vectorNd<T,N> operator*(const vectorNd<T,N> & right) const {
+	if(right.size()!=N){
+	  std::cerr<<("bill::matrixNN<T,N>::operator*: vector has different dimension than the matrix!\n");
+	  return vectorNd<T,N>();
+	}
+
+        vectorNd<T,N> result(0);
+	for(unsigned int i=0; i<N; i++)
+	  for(unsigned int j=0; j<N; j++)
+	    result[i]+=body[N*i+j]*right[j];
+
+        return result;
+    }
+
+   // z wektorem transponowanym left*right
+   friend  vectorNd<T,N> operator*(const vectorNd<T,N>& left, const matrixNN<T,N>& right) {
+	if(left.size()!=right.dim()){
+	  std::cerr<<("bill::matrixNN<T,N>::operator*: vector has different dimension than the matrix!\n");
+	  return vectorNd<T,N>();
+	}
+
+        vectorNd<T,N> result(0);
+	for(unsigned int i=0; i<N; i++)
+	  for(unsigned int j=0; j<N; j++)
+	    result[i]+=left[j]*right[j*N+i];
+
+        return result;
+   }
+
+   // z macierzą *right
+   matrixNN<T,N> operator*(const matrixNN<T,N> & right) const {
+	if(right.dim()!=N){
+	  std::cerr<<("bill::matrixNN<T,N>::operator*: matrices are uneven!\n");
+	  return matrixNN<T,N>();
+	}
+
+        matrixNN<T,N> result(0);
+	for(unsigned int i=0; i<N; i++)
+	  for(unsigned int j=0; j<N; j++)
+	    for(unsigned int k=0; k<N; k++)
+	      result(i,j)+=body[N*i+k]*right(k,j);
+
+        return result;
+    }
+
+   // ze skalarem *scalar
+   matrixNN<T,N> operator*(const T& scalar) const {
+        matrixNN<T,N> result;
+	for(unsigned int i=0; i<N; i++)
+	  for(unsigned int j=0; j<N; j++)
+	    result(i,j)=scalar*body[N*i+j];
+
+	return result;
+   }
+
+   // ze skalarem scalar*right
+   friend matrixNN<T,N> operator*(const T & scalar, const matrixNN<T,N>& right) {
+	return right*scalar;
+   }
+
+   // dzielenie przez skalar
+   matrixNN<T,N> operator/(const T& scalar) const {
+        matrixNN<T,N> result;
+	for(unsigned int i=0; i<N; i++)
+	  for(unsigned int j=0; j<N; j++)
+	    result(i,j)=body[N*i+j]/scalar;
+
+	return result;
+   }
+
+  void operator*=(const T & scalar) {
+	for(auto& item : body)
+	  item*=scalar;
+  }
+
+  void operator/=(const T & scalar) {
+	for(auto& item : body)
+	  item/=scalar;
+  }
+
+  friend std::ostream& operator<<(std::ostream& stream, const matrixNN& A){
+	for(unsigned int i=0; i<N; ++i){
+	  stream<<"( ";
+	  for(unsigned int j=0; j<N; ++j){
+	    stream<<A.body[N*i+j]<<" ";
+	  }
+	  stream<<")"<<std::endl;
+	}	
+	return stream;
+  }
+	
+  // STATIC FUNCTIONS
+
+  // macierz transponowana	
+  static matrixNN<T,N> trans(const matrixNN<T,N>& A){
+        matrixNN<T,N> result;
+	for(unsigned int i=0; i<N; i++)
+	  for(unsigned int j=0; j<N; j++)
+	    result(i,j)=A(j,i);
+
+	return result;
+  }
+
+  // zwraca identyczność
+  static matrixNN<T,N> loadID(){
+        matrixNN<T,N> result(0);
+
+	for(unsigned int i=0; i<N; i++)
+	  result(i,i)=1;
+
+	return result;
+  }
+
+  // tylko 1,2&3 wymiary!	
+  // wyznacznik / det
+  static T det(const matrixNN<T,N>& A){
+	switch(N){
+	  case 1U: return A(0,0);
+	  case 2U: return A(0,0)*A(1,1)-A(0,1)*A(1,0);
+	  case 3U: return A(0,0)*A(1,1)*A(2,2) + A(1,0)*A(2,1)*A(0,2) + A(2,0)*A(0,1)*A(1,2) - A(0,0)*A(2,1)*A(1,2) - A(2,0)*A(1,1)*A(0,2) - A(1,0)*A(0,1)*A(2,2);
+	}
+	//TODO: generic algorithm
+	std::cerr<<"I don't know how to calculate det for matrices "<<N<<"x"<<N<<" (yet)!"<<std::endl;
+	return T();
+  }
+
+  // macierz odwrotna
+  static matrixNN<T,N> inverse(const matrixNN<T,N>& A){
+	T detA = det(A);
+	if(fabs(detA)<1e-15){
+	  std::cerr<<"I can't reverse the given matrix! det == 0."<<std::endl;
+	  return matrixNN<T,N>();
+	}
+	switch(N){
+	  case 1U: return matrixNN<T,N>({{1.}})/detA;
+	  case 2U: return matrixNN<T,N>({{A(1,1),-A(0,1)},{-A(1,0),A(0,0)}})/detA;
+	  case 3U: return matrixNN<T,N>({{A(1,1)*A(2,2)-A(1,2)*A(2,1),A(0,2)*A(2,1)-A(0,1)*A(2,2),A(0,1)*A(1,2)-A(0,2)*A(1,1)},{A(1,2)*A(2,0)-A(1,0)*A(2,2),A(0,0)*A(2,2)-A(0,2)*A(2,0),A(0,2)*A(1,0)-A(0,0)*A(1,2)},{A(1,0)*A(2,1)-A(1,1)*A(2,0),A(0,1)*A(2,0)-A(0,0)*A(2,1),A(0,0)*A(1,1)-A(0,1)*A(1,0)}})/detA;
+	}
+	//TODO: generic algorithm
+	std::cerr<<"I don't know how to calculate reverse matrix for matrices "<<N<<"x"<<N<<" (yet)!"<<std::endl;
+	return matrixNN<T,N>();	  
+  }
+  }; // end class matrixNN
+
+//********
+// Aliasy      
+//********
+  using matrix    = matrixNN<double,3U>;
+  using matrix2d  = matrixNN<double,2U>;
+  using matrix3f  = matrixNN<float,3U>;
+  using matrix2f  = matrixNN<float,2U>;
+
 }	//end namespace bill
 #endif //BILLVECTOR_H

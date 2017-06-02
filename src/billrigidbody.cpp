@@ -9,11 +9,11 @@ bill::vector bill::BillRigidBody::Torque(){
 }	
 
 void bill::BillRigidBody::CalculateMove(bill::vector& force, bill::vector& torque){
-  future = algorithm(present,past,force,torque,step);
+  future = algorithm(present,past,force,torque,moment_of_inertia,inverse_moment_of_inertia,step);
 }
 
 void bill::BillRigidBody::CalculateMove(bill::BillRBIntegrator algorithm, bill::vector& force, bill::vector& torque){
-  future = algorithm(present,past,force,torque,step);
+  future = algorithm(present,past,force,torque,moment_of_inertia,inverse_moment_of_inertia,step);
 }
 
 void bill::BillRigidBody::Move(){
@@ -21,13 +21,16 @@ void bill::BillRigidBody::Move(){
   present = future;	
 }
 
-bill::BillRigidBody::BillRigidBody(bill::BillRBIntegrator algorithm, bill::vector position, bill::vector velocity, quaternion rotation, vector angular, double mass, bill::vector color, double step){
+bill::BillRigidBody::BillRigidBody(bill::BillRBIntegrator algorithm, bill::vector position, bill::vector velocity, matrix moment_of_inertia, quaternion rotation, vector angular, double mass, bill::vector color, double step){
   this->algorithm=algorithm;
   this->step=step;
 
   past    = std::tuple<bill::vector,bill::vector,bill::quaternion,bill::vector>(position-velocity*step,{0,0,0},rotation,angular);
   present = std::tuple<bill::vector,bill::vector,bill::quaternion,bill::vector>(position,velocity,rotation,angular);
   future  = std::tuple<bill::vector,bill::vector,bill::quaternion,bill::vector>({0,0,0},{0,0,0},rotation,angular);
+
+  this->moment_of_inertia=moment_of_inertia;
+  this->inverse_moment_of_inertia = bill::matrix::inverse(moment_of_inertia);
 
   this->mass = mass;
   this->color = color;
@@ -81,6 +84,42 @@ bill::vector bill::BillRigidBody::future_position(){
 bill::vector bill::BillRigidBody::future_velocity(){
   return vp();
 }
+bill::quaternion bill::BillRigidBody::qm(){
+  return std::get<2>(past);
+}
+bill::vector bill::BillRigidBody::wm(){
+  return std::get<3>(past);
+}
+bill::quaternion bill::BillRigidBody::past_quaternion(){
+  return qm();
+}
+bill::vector bill::BillRigidBody::past_angular(){
+  return wm();
+}
+bill::quaternion bill::BillRigidBody::q(){
+  return std::get<2>(present);
+}
+bill::vector bill::BillRigidBody::w(){
+  return std::get<3>(present);
+}
+bill::quaternion bill::BillRigidBody::present_quaternion(){
+  return q();
+}
+bill::vector bill::BillRigidBody::angular(){
+  return w();
+}
+bill::quaternion bill::BillRigidBody::qp(){
+  return std::get<2>(future);
+}
+bill::vector bill::BillRigidBody::wp(){
+  return std::get<3>(future);
+}
+bill::quaternion bill::BillRigidBody::future_quaternion(){
+  return qp();
+}
+bill::vector bill::BillRigidBody::future_angular(){
+  return wp();
+}
 
 double bill::BillRigidBody::m(){
   return mass;
@@ -111,6 +150,39 @@ void bill::BillRigidBody::set_future_velocity(bill::vector new_v){
 }
 void bill::BillRigidBody::vp(bill::vector new_v){
   std::get<1>(future)=new_v;
+}
+
+void bill::BillRigidBody::set_quaternion(bill::quaternion new_q){
+  q(new_q);
+}
+void bill::BillRigidBody::q(bill::quaternion new_q){
+  std::get<2>(present)=new_q;
+}
+void bill::BillRigidBody::set_angular(bill::vector new_w){
+  w(new_w);
+}
+void bill::BillRigidBody::w(bill::vector new_w){
+  std::get<3>(present)=new_w;
+}
+void bill::BillRigidBody::set_future_quaternion(bill::quaternion new_q){
+  qp(new_q);
+}
+void bill::BillRigidBody::qp(bill::quaternion new_q){
+  std::get<2>(future)=new_q;
+}
+void bill::BillRigidBody::set_future_angular(bill::vector new_w){
+  wp(new_w);
+}
+void bill::BillRigidBody::wp(bill::vector new_w){
+  std::get<3>(future)=new_w;
+}
+
+void bill::BillRigidBody::I(bill::matrix new_I){
+  moment_of_inertia=new_I;
+  inverse_moment_of_inertia=bill::matrix::inverse(new_I);
+}
+void bill::BillRigidBody::set_moment_of_intertia(bill::matrix new_I){
+  I(new_I);
 }
 
 void bill::BillRigidBody::disable(){

@@ -6,24 +6,10 @@
 #include "../../headers/billrigidbody.h"
 #include "../../headers/billRBengine.h"
 #include "box.h"
+#include "RBintegrators.h"
 
 void renderScene(void);
 void mainLoop(void);
-
-bill::BillRBIntegrator HollyWood = [](std::tuple<bill::vector,bill::vector,bill::quaternion,bill::vector> PhasePoint0, std::tuple<bill::vector,bill::vector,bill::quaternion,bill::vector> PhasePointM, bill::vector Force, bill::vector torque, bill::matrix I, bill::matrix Ip, double step){
-
-bill::vector x = std::get<0>( PhasePoint0 );
-bill::vector v = std::get<1>( PhasePoint0 );
-bill::quaternion q = std::get<2>( PhasePoint0 );
-bill::vector w = std::get<3>( PhasePoint0 );
-bill::quaternion qw (0.,w);
-
-q=q+step*0.5*(qw*q);
-x+=step*v;
-
-return std::tuple<bill::vector,bill::vector,bill::quaternion,bill::vector>(x,v,q,w);
-
-};
 
 class Boxes : public bill::BillSetOfRigidBodies {
 public:
@@ -39,6 +25,19 @@ public:
 
   };
 
+  virtual void Draw(){
+    bill::BillSetOfRigidBodies::Draw();
+
+    glColor4f(0.28627451, 0.15686275, 0.12156863,0.8);
+    glBegin(GL_QUADS);
+    glVertex3f(-5.0f, -0.05-0.2, -5.0f);
+    glVertex3f(-5.0f, -0.05-0.2,  5.0f);
+    glVertex3f( 5.0f, -0.05,  5.0f);
+    glVertex3f( 5.0f, -0.05, -5.0f);
+    glEnd();
+    glPopMatrix();
+  }
+
 } SetOfBodies;
 
 bill::BillRBEngine engine;
@@ -48,8 +47,8 @@ int main(int argc, char **argv){
   bill::GLaux::eye=bill::vector({-1,0,0});
   bill::GLaux::center=bill::vector({0,0,0});
 
-  SetOfBodies.AddBody(new box(HollyWood,0.1,0.2,0.3,bill::vector({0.,0.0,0.3})));
-  SetOfBodies.AddBody(new box(HollyWood,0.1,0.1,0.1,bill::vector({0.,0.0,-0.3}),bill::vector({0.0,0.0,0.02}),bill::quaternion({0.,0.,1.,0.}),bill::vector({0.2,0.,0.})));
+  SetOfBodies.AddBody(new box(bill::RBVerlet,0.2,0.2,0.2,bill::vector({0.,0.0,0.3}),bill::vector({0.,0.0,0}),bill::quaternion({0.,0.,1.,0.}),bill::vector({0.,0.,0.})));
+  SetOfBodies.AddBody(new box(bill::RBVerlet,0.1,0.1,0.1,bill::vector({0.,-0.05,-0.3}),bill::vector({0.0,0.0,0.02}),bill::quaternion({0.,0.,1.,0.}),bill::vector({0.,0.,0.})));
 
   engine = bill::BillRBEngine(SetOfBodies);
 

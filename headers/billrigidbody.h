@@ -11,7 +11,7 @@
 
 namespace bill{
 
-using BillRBIntegrator = std::function<std::tuple<vector,vector,quaternion,vector>(std::tuple<vector,vector,quaternion,vector>,std::tuple<vector,vector,quaternion,vector>,vector,vector,double)>;
+using BillRBIntegrator = std::function<std::tuple<vector,vector,quaternion,vector>(std::tuple<vector,vector,quaternion,vector>,std::tuple<vector,vector,quaternion,vector>,vector,vector,matrix,matrix,double)>;
 
 class BillRigidBody{
 protected:
@@ -24,14 +24,15 @@ protected:
 	std::tuple<vector,vector,quaternion,vector> future;
 
 	double mass;
-	double moment_of_inertia[3][3];
+	bill::matrix moment_of_inertia;
+	bill::matrix inverse_moment_of_inertia;
 	vector color;
 	float radius;
 
 	bool ENABLE_SIMULATION;
 
 public:
-	BillRigidBody(BillRBIntegrator algorithm, vector position=vector({0.,0.,0.}), vector velocity=vector({0.,0.,0.}), quaternion rotation=quaternion({0.,0.,1.,0.}), vector angular=vector({0.1,0.1,0.1}), double mass=1.0, vector color=vector({1.0,0.0,0.0}), double step=0.2);
+	BillRigidBody(BillRBIntegrator algorithm, vector position=vector({0.,0.,0.}), vector velocity=vector({0.,0.,0.}), matrix moment_of_inertia=matrix({{1.,0.,0.},{0.,1.,0.},{0.,0.,1.}}), quaternion rotation=quaternion({0.,0.,1.,0.}), vector angular=vector({0.1,0.1,0.1}), double mass=1.0, vector color=vector({1.0,0.0,0.0}), double step=0.2);
 	virtual ~BillRigidBody();
 	virtual void Draw();
 
@@ -56,6 +57,18 @@ public:
 	bill::vector xp();
 	bill::vector future_velocity();
 	bill::vector vp();
+	bill::quaternion past_quaternion();
+	bill::quaternion qm();
+	bill::vector past_angular();
+	bill::vector wm();
+	bill::quaternion present_quaternion();
+	bill::quaternion q();
+	bill::vector angular();
+	bill::vector w();
+	bill::quaternion future_quaternion();
+	bill::quaternion qp();
+	bill::vector future_angular();
+	bill::vector wp();
 
 // position and velocity setters
 	void set_position(bill::vector new_x);
@@ -66,6 +79,19 @@ public:
 	void xp(bill::vector new_x);
 	void set_future_velocity(bill::vector new_v);
 	void vp(bill::vector new_v);
+	void set_quaternion(bill::quaternion new_q);
+	void q(bill::quaternion new_q);
+	void set_angular(bill::vector new_w);
+	void w(bill::vector new_w);
+	void set_future_quaternion(bill::quaternion new_q);
+	void qp(bill::quaternion new_q);
+	void set_future_angular(bill::vector new_w);
+	void wp(bill::vector new_w);
+
+// set moment of inertia
+
+	void set_moment_of_intertia(bill::matrix new_I);
+	void I(bill::matrix new_I);
 
 // disable/enable simulation
 	void disable();

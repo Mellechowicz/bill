@@ -32,5 +32,12 @@ int main(){
 	
 	bill::vectorNd<double,10> tst11({1.0,2.0,3.0,4.0,5.0});
 
+
+	bill::vector a = 1.;
+	std::cout<<a<<std::endl;
+	bill::vector b = {1.,2.,3.};
+	std::cout<<b<<std::endl;
+
+
 	return 0;
 }

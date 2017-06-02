@@ -19,6 +19,7 @@ box::box(bill::BillRBIntegrator algorithm, double _a, double _b, double _c, bill
 
  radius = sqrt(0.25*(a*a+b*b+c*c));
 
+ punkt_tarcia = bill::vector({0.,-.5*b,0.});
 }
 
 void box::rotatevector(bill::vector& v){
@@ -82,3 +83,15 @@ void box::get_vertices(std::vector<bill::vector>& vers){
   vertices(vers);
 } // zwraca std::vector wektorów do wierzchołków
 
+bill::vector box::Tarcie(){
+  bill::vector v0 = v();
+  return -0.001*v0.versor();   
+} // zwraca siłę tarcia
+
+bill::vector box::Force(){
+  return Tarcie();
+} // zwraca siłę wypadkową
+
+bill::vector box::Torque(){
+  return (punkt_tarcia^Tarcie())- 0.001*w();
+} // zwraca wypadkowy moment siły

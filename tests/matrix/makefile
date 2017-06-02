@@ -12,7 +12,7 @@ BIN = ./obj
 
 
 MAIN_PREFIX = main
-MODE = quaternion
+MODE = matrix
 
 MKDIR_P = mkdir -p
 
