@@ -88,9 +88,10 @@ public:
 	void set_future_angular(bill::vector new_w);
 	void wp(bill::vector new_w);
 
-// set moment of inertia
-
-	void set_moment_of_intertia(bill::matrix new_I);
+// get/set moment of inertia
+	bill::matrix get_moment_of_inertia();
+	bill::matrix get_inverse_moment_of_inertia();
+	void set_moment_of_inertia(bill::matrix new_I);
 	void I(bill::matrix new_I);
 
 // disable/enable simulation

@@ -181,8 +181,16 @@ void bill::BillRigidBody::I(bill::matrix new_I){
   moment_of_inertia=new_I;
   inverse_moment_of_inertia=bill::matrix::inverse(new_I);
 }
-void bill::BillRigidBody::set_moment_of_intertia(bill::matrix new_I){
+void bill::BillRigidBody::set_moment_of_inertia(bill::matrix new_I){
   I(new_I);
+}
+
+bill::matrix bill::BillRigidBody::get_moment_of_inertia(){
+  return moment_of_inertia;
+}
+
+bill::matrix bill::BillRigidBody::get_inverse_moment_of_inertia(){
+  return inverse_moment_of_inertia;
 }
 
 void bill::BillRigidBody::disable(){

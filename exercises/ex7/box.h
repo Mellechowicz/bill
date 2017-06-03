@@ -3,6 +3,7 @@
 
 #include "../../headers/billrigidbody.h"
 #include "../../headers/billvector.h"
+#include <tuple>
 
 class box : public bill::BillRigidBody{
 protected:
@@ -23,6 +24,9 @@ public:
 	virtual ~box(){};
 
 	void Draw();
+
+	double project(bill::vector n);
+	bill::vector support(bill::vector n);
 
 	double get_size(const unsigned int i) const; //zwraca wymiar prostopadłościaniu w kierunku: 0:x, 1:y, 2:z
 	bill::vector get_versor(const unsigned int i); // zwraca wersor tworzący wierzchołek: 0:x, 1:y, 2:z
