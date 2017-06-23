@@ -18,6 +18,7 @@ public:
 
   BillRBEngine();
   BillRBEngine(BillSetOfRigidBodies& set);
+  virtual ~BillRBEngine();
   void step();
 }; //end of class BillRBEngine
 

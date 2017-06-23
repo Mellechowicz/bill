@@ -22,3 +22,8 @@ void bill::BillEngine::step(){
     }
   }
 }
+
+bill::BillEngine::~BillEngine(){
+
+
+}

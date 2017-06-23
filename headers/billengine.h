@@ -18,6 +18,7 @@ public:
 
   BillEngine();
   BillEngine(BillSetOfPoints& set);
+  virtual ~BillEngine();
   void step();
 }; //end of class BillEngine
 } //end of namespace bill

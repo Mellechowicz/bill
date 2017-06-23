@@ -13,6 +13,11 @@ bill::BillRBEngine::BillRBEngine(BillSetOfRigidBodies& set){
   this->timestep=timestep;
 }
 
+bill::BillRBEngine::~BillRBEngine(){
+
+
+}
+
 void bill::BillRBEngine::step(){
   if(set!=NULL){
     now=glutGet(GLUT_ELAPSED_TIME);
